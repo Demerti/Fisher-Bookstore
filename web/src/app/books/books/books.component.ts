@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Book } from '../books/book';
+import { Book } from '../book';
 
 @Component({
   selector: 'app-books',
@@ -8,12 +8,19 @@ import { Book } from '../books/book';
 })
 export class BooksComponent implements OnInit {
 
-  book: Book = {
+  books: Book[] = [
+  {
     id:1,
     title: 'Ready Player One',
     author: 'Ernest Cline'
+  },
+  {
+    id:2,
+    title: 'Catch 22',
+    author: 'Joseph Heller'
   }
-
+  ];
+  
   ngOnInit() {
   }
 
