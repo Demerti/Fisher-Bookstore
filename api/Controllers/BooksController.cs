@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fisher.Bookstore.Models;
 using Microsoft.AspNetCore.Mvc;
-
+ 
 namespace Fisher.Bookstore.Api.Controllers
 {
     [Route("api/books")]
@@ -16,7 +16,7 @@ namespace Fisher.Bookstore.Api.Controllers
         public BooksController(BookstoreContext db)
         {
             this.db = db;
-             if (this.db.Books.Count() == 0)
+            if (this.db.Books.Count() == 0)
             {
                 this.db.Books.Add(new Book()
                 {
@@ -42,10 +42,76 @@ namespace Fisher.Bookstore.Api.Controllers
             }
             this.db.SaveChanges();
         }
+
         [HttpGet]
         public IActionResult Get()
         {
             return Ok(db.Books);
+        }
+
+        [HttpGet("{id}", Name="GetBook")]
+        public IActionResult GetBook(int id)
+        {
+            var book = db.Books.FirstOrDefault(b => b.Id == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(book);
 }
+        [HttpPost]
+        public IActionResult Post([FromBody]Book book)
+        {
+           if(book == null) 
+           {
+               return BadRequest();
+           }
+
+           db.Books.Add(book);
+           db.SaveChanges();
+
+           return CreatedAtRoute("GetBook", new Book{Id = book.Id}, book);
+        }
+    
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody]Book book)
+        {
+            if (book == null || book.Id != id)
+            {
+                return BadRequest();
+            }
+
+            var bookToEdit = db.Books.FirstOrDefault(b => b.Id == id);
+            if(bookToEdit == null)
+            {
+                return NotFound();
+            }
+
+            bookToEdit.Title = book.Title;
+            bookToEdit.ISBN=book.ISBN;
+
+            db.Books.Update(bookToEdit);
+            db.SaveChanges();
+
+            return NoContent();
+        }
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var book = db.Books.FirstOrDefault(b => b.Id == id);
+
+            if (book == null)
+            {
+                return NotFound();
+            }
+
+            db.Books.Remove(book);
+            db.SaveChanges();
+
+            return NoContent();
+        }
+    
     }
 }
