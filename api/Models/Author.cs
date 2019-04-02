@@ -9,5 +9,12 @@ namespace Fisher.Bookstore.Models
         public string Name {get; set;}
         public string Bio {get; set;}
         public List<Book> Titles {get; set;}
+
+        public void ChangeAuthorName( string penname)
+        {
+            this.Name=Name;
+        }
+
+        
     }
 }
