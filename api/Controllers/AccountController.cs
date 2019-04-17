@@ -73,14 +73,14 @@ namespace AMIS3610.GroupProject.Api.Controllers
                     return Unauthorized();
                 }
             ApplicationUser user = await userManager.FindByEmailAsync(login.Email);
-            JwtSecurityToken token = await GenerateTokenAsync(user);
+            JwtSecurityToken token = GenerateToken(user);
             string serializedToken = new JwtSecurityTokenHandler().WriteToken(token);
             var response = new {Token = serializedToken };
             
             return Ok(response);
         }
 
-        private async Task<JwtSecurityToken> GenerateTokenAsync(ApplicationUser user)
+        private JwtSecurityToken GenerateToken(ApplicationUser user)
         {
             var claims = new List<Claim>()
             {
@@ -103,9 +103,9 @@ namespace AMIS3610.GroupProject.Api.Controllers
                 notBefore: DateTime.UtcNow,
                 signingCredentials: new SigningCredentials(new SymmetricSecurityKey(signingKey), SecurityAlgorithms.HmacSha256));
 
-                
-                return token;
-            
+
+            return token;
+
         }
         [Authorize] // easily support authorization with one line of code
         [HttpGet("profile")]
